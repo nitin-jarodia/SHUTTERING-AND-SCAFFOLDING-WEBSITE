@@ -27,7 +27,20 @@ export const metadata: Metadata = {
     title: `${company.name} | Scaffolding & Shuttering Rental`,
     description:
       "Trusted scaffold and shuttering rental support for contractors, builders, industrial plants, and infrastructure projects.",
-    type: "website"
+    type: "website",
+    locale: "en_IN",
+    siteName: company.name,
+    url: "/"
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${company.name} | Scaffolding & Shuttering Rental`,
+    description:
+      "Scaffold and shuttering rental support for contractors, builders, industrial plants, and infrastructure projects."
+  },
+  robots: {
+    index: true,
+    follow: true
   }
 };
 
@@ -40,6 +53,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     email: company.email,
     address: company.address,
     areaServed: company.location,
+    openingHours: "Mo-Sa 08:00-19:00",
     description:
       "Scaffolding and shuttering rental, supply, and site support for construction projects."
   };
@@ -52,7 +66,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
         />
         <SiteHeader />
-        <main>{children}</main>
+        <main className="pb-20 sm:pb-0">{children}</main>
         <SiteFooter />
         <WhatsappButton />
       </body>

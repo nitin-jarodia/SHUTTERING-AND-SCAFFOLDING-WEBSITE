@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { Send } from "lucide-react";
+import { AlertCircle, CheckCircle2, Loader2, Send } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,8 @@ type FormState = {
   message: string;
 };
 
+type FormErrors = Partial<Record<keyof FormState, string>>;
+
 const initialState: FormState = {
   name: "",
   phone: "",
@@ -24,22 +26,69 @@ const initialState: FormState = {
 
 export function ContactForm() {
   const [form, setForm] = useState<FormState>(initialState);
-  const [status, setStatus] = useState("");
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [status, setStatus] = useState<{ type: "success" | "error"; message: string } | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   function updateField(field: keyof FormState, value: string) {
     setForm((current) => ({ ...current, [field]: value }));
+    setErrors((current) => ({ ...current, [field]: undefined }));
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!form.name.trim() || !form.phone.trim() || !form.message.trim()) {
-      setStatus("Please add your name, phone number, and enquiry details.");
-      return;
+
+    setStatus(null);
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch("/api/enquiries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "contact", ...form })
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        setErrors(result.errors ?? {});
+        setStatus({
+          type: "error",
+          message: result.message ?? "Please check the form and try again."
+        });
+        return;
+      }
+
+      setStatus({
+        type: "success",
+        message: result.message
+      });
+      setForm(initialState);
+    } catch {
+      setStatus({
+        type: "error",
+        message: "We could not submit the form. Please call or WhatsApp us directly."
+      });
+    } finally {
+      setIsSubmitting(false);
     }
-    setStatus(
-      "Thank you. Your enquiry is ready for submission and our team will contact you shortly."
+  }
+
+  function fieldError(field: keyof FormState) {
+    if (!errors[field]) {
+      return null;
+    }
+
+    return (
+      <p className="mt-2 flex items-center gap-2 text-sm font-semibold text-red-600">
+        <AlertCircle className="h-4 w-4" />
+        {errors[field]}
+      </p>
     );
-    setForm(initialState);
+  }
+
+  function fieldInvalid(field: keyof FormState) {
+    return Boolean(errors[field]);
   }
 
   return (
@@ -52,8 +101,10 @@ export function ContactForm() {
             value={form.name}
             onChange={(event) => updateField("name", event.target.value)}
             placeholder="Your full name"
+            aria-invalid={fieldInvalid("name")}
             required
           />
+          {fieldError("name")}
         </div>
         <div className="space-y-2">
           <Label htmlFor="phone">Phone</Label>
@@ -62,8 +113,10 @@ export function ContactForm() {
             value={form.phone}
             onChange={(event) => updateField("phone", event.target.value)}
             placeholder="+91"
+            aria-invalid={fieldInvalid("phone")}
             required
           />
+          {fieldError("phone")}
         </div>
       </div>
       <div className="space-y-2">
@@ -74,7 +127,9 @@ export function ContactForm() {
           value={form.email}
           onChange={(event) => updateField("email", event.target.value)}
           placeholder="name@company.com"
+          aria-invalid={fieldInvalid("email")}
         />
+        {fieldError("email")}
       </div>
       <div className="space-y-2">
         <Label htmlFor="message">Enquiry Details</Label>
@@ -83,16 +138,35 @@ export function ContactForm() {
           value={form.message}
           onChange={(event) => updateField("message", event.target.value)}
           placeholder="Tell us what material you need, site location, and expected rental duration."
+          aria-invalid={fieldInvalid("message")}
           required
         />
+        {fieldError("message")}
       </div>
       {status ? (
-        <p className="rounded-2xl bg-amber-50 p-4 text-sm font-semibold text-slate-800">
-          {status}
+        <p className={`flex items-start gap-3 rounded-2xl p-4 text-sm font-semibold ${
+          status.type === "success"
+            ? "bg-emerald-50 text-emerald-800"
+            : "bg-red-50 text-red-700"
+        }`}>
+          {status.type === "success" ? (
+            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
+          ) : (
+            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+          )}
+          <span>{status.message}</span>
         </p>
       ) : null}
-      <Button type="submit" size="lg" className="w-full sm:w-auto">
-        Send Enquiry <Send className="h-4 w-4" />
+      <Button type="submit" size="lg" className="w-full sm:w-auto" disabled={isSubmitting}>
+        {isSubmitting ? (
+          <>
+            <Loader2 className="h-4 w-4 animate-spin" /> Sending Enquiry
+          </>
+        ) : (
+          <>
+            Send Enquiry <Send className="h-4 w-4" />
+          </>
+        )}
       </Button>
     </form>
   );

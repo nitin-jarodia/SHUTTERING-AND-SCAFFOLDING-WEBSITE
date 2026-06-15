@@ -13,19 +13,20 @@ export function CtaSection() {
           <div className="absolute inset-0 bg-steel-grid bg-[size:34px_34px] opacity-40" />
           <div className="relative max-w-3xl">
             <p className="mb-4 text-xs font-black uppercase tracking-[0.28em] text-amber-300">
-              Need material on site?
+              Planning a pour, access job, or maintenance shutdown?
             </p>
             <h2 className="text-balance text-3xl font-black tracking-tight text-white sm:text-5xl">
-              Get a practical quote for scaffold and shuttering material today.
+              Get a practical material quote before your site schedule gets tight.
             </h2>
             <p className="mt-5 text-lg leading-8 text-slate-300">
-              Share your site location, rental duration, and required items. Our
-              team will respond with availability, pricing, and dispatch support.
+              Share location, rental duration, required items, and approximate
+              quantities. We will respond with availability, pricing, and
+              dispatch guidance your site team can actually use.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg">
                 <Link href="/request-quote">
-                  Request a Quote <ArrowRight className="h-5 w-5" />
+                  Get Quote Guidance <ArrowRight className="h-5 w-5" />
                 </Link>
               </Button>
               <Button asChild variant="light" size="lg">

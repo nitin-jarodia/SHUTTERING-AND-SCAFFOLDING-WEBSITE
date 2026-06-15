@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
-import { Clock3, PackageCheck, ShieldCheck } from "lucide-react";
+import { Clock3, MessageCircle, PackageCheck, Phone, ShieldCheck } from "lucide-react";
 
+import { PageHero } from "@/components/page-hero";
 import { QuoteForm } from "@/components/quote-form";
 import { SectionHeading } from "@/components/section-heading";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { company } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Request Quote",
@@ -14,24 +17,17 @@ export const metadata: Metadata = {
 export default function RequestQuotePage() {
   return (
     <>
-      <section className="industrial-surface py-24">
-        <div className="container">
-          <p className="mb-4 text-xs font-black uppercase tracking-[0.28em] text-amber-300">
-            Request Quote
-          </p>
-          <h1 className="max-w-4xl text-balance text-5xl font-black tracking-tight text-white sm:text-6xl">
-            Get pricing, availability, and dispatch guidance for your site.
-          </h1>
-          <p className="mt-6 max-w-3xl text-lg leading-9 text-slate-300">
-            Add product needs, site location, rental duration, and quantity notes.
-            The more detail you share, the faster we can quote accurately.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Request Quote"
+        title="Get pricing, availability, and dispatch guidance for your site."
+        description="Add product needs, site location, rental duration, and quantity notes. The more detail you share, the faster we can quote accurately."
+        ctaLabel="Start Quote Form"
+        ctaHref="#quote-form"
+      />
 
       <section className="py-20">
         <div className="container grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
-          <Card className="p-2 shadow-industrial">
+          <Card id="quote-form" className="p-2 shadow-industrial scroll-mt-28">
             <CardContent className="p-6 sm:p-8">
               <QuoteForm />
             </CardContent>
@@ -67,6 +63,27 @@ export default function RequestQuotePage() {
                 </Card>
               ))}
             </div>
+            <Card className="mt-6 border-amber-200 bg-amber-50 p-6">
+              <h2 className="text-xl font-black text-slate-950">
+                Need material urgently?
+              </h2>
+              <p className="mt-3 leading-7 text-slate-700">
+                If dispatch timing is critical, call or WhatsApp after submitting
+                the form so the team can check live stock faster.
+              </p>
+              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                <Button asChild variant="secondary">
+                  <a href={`tel:${company.phone}`}>
+                    <Phone className="h-4 w-4" /> Call
+                  </a>
+                </Button>
+                <Button asChild>
+                  <a href={company.whatsapp} target="_blank" rel="noreferrer">
+                    <MessageCircle className="h-4 w-4" /> WhatsApp
+                  </a>
+                </Button>
+              </div>
+            </Card>
           </div>
         </div>
       </section>

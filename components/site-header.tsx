@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Phone, Mail, MapPin, X } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Menu, Phone, Mail, MapPin, X, MessageCircle } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -14,7 +15,7 @@ export function SiteHeader() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 shadow-sm backdrop-blur-xl">
       <div className="hidden bg-slate-950 py-2 text-xs font-semibold text-slate-200 lg:block">
         <div className="container flex items-center justify-between">
           <div className="flex items-center gap-6">
@@ -56,11 +57,18 @@ export function SiteHeader() {
               key={link.href}
               href={link.href}
               className={cn(
-                "rounded-full px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-100 hover:text-slate-950",
-                pathname === link.href && "bg-amber-100 text-slate-950"
+                "relative rounded-full px-4 py-2 text-sm font-bold text-slate-700 transition hover:text-slate-950",
+                pathname === link.href && "text-slate-950"
               )}
             >
-              {link.label}
+              {pathname === link.href ? (
+                <motion.span
+                  layoutId="active-nav-pill"
+                  className="absolute inset-0 rounded-full bg-amber-100"
+                  transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                />
+              ) : null}
+              <span className="relative">{link.label}</span>
             </Link>
           ))}
         </nav>
@@ -68,7 +76,7 @@ export function SiteHeader() {
         <div className="hidden items-center gap-3 lg:flex">
           <Button asChild variant="outline">
             <a href={company.whatsapp} target="_blank" rel="noreferrer">
-              WhatsApp
+              <MessageCircle className="h-4 w-4" /> WhatsApp
             </a>
           </Button>
           <Button asChild>
@@ -85,35 +93,54 @@ export function SiteHeader() {
         </button>
       </div>
 
-      {open ? (
-        <div className="border-t border-slate-200 bg-white p-4 shadow-xl lg:hidden">
-          <nav className="grid gap-2">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setOpen(false)}
-                className={cn(
-                  "rounded-2xl px-4 py-3 font-bold text-slate-700",
-                  pathname === link.href && "bg-amber-100 text-slate-950"
-                )}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-          <div className="mt-4 grid gap-3">
-            <Button asChild>
-              <Link href="/request-quote" onClick={() => setOpen(false)}>
-                Request Quote
-              </Link>
-            </Button>
-            <Button asChild variant="secondary">
-              <a href={`tel:${company.phone}`}>Call Now</a>
-            </Button>
-          </div>
-        </div>
-      ) : null}
+      <AnimatePresence>
+        {open ? (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.22, ease: "easeOut" }}
+            className="border-t border-slate-200 bg-white p-4 shadow-xl lg:hidden"
+          >
+            <nav className="grid gap-2">
+              {navLinks.map((link, index) => (
+                <motion.div
+                  key={link.href}
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.025 }}
+                >
+                  <Link
+                    href={link.href}
+                    onClick={() => setOpen(false)}
+                    className={cn(
+                      "block rounded-2xl px-4 py-3 font-bold text-slate-700",
+                      pathname === link.href && "bg-amber-100 text-slate-950"
+                    )}
+                  >
+                    {link.label}
+                  </Link>
+                </motion.div>
+              ))}
+            </nav>
+            <div className="mt-4 grid gap-3">
+              <Button asChild>
+                <Link href="/request-quote" onClick={() => setOpen(false)}>
+                  Request Quote
+                </Link>
+              </Button>
+              <Button asChild variant="secondary">
+                <a href={`tel:${company.phone}`}>Call Now</a>
+              </Button>
+              <Button asChild variant="outline">
+                <a href={company.whatsapp} target="_blank" rel="noreferrer">
+                  WhatsApp Us
+                </a>
+              </Button>
+            </div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </header>
   );
 }

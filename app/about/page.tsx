@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { CheckCircle2 } from "lucide-react";
 
+import { AnimatedCounter } from "@/components/animated-counter";
 import { CtaSection } from "@/components/cta-section";
-import { MotionWrapper } from "@/components/motion-wrapper";
+import { PageHero } from "@/components/page-hero";
 import { SectionHeading } from "@/components/section-heading";
 import { Card, CardContent } from "@/components/ui/card";
-import { advantages, company, processSteps, stats } from "@/lib/data";
+import { advantages, processSteps, stats } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "About Us",
@@ -16,36 +17,27 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <>
-      <section className="industrial-surface relative overflow-hidden py-24">
-        <div className="absolute inset-0 bg-hero-radial" />
-        <div className="container relative">
-          <MotionWrapper>
-            <p className="mb-4 text-xs font-black uppercase tracking-[0.28em] text-amber-300">
-              About Us
-            </p>
-            <h1 className="max-w-4xl text-balance text-5xl font-black tracking-tight text-white sm:text-6xl">
-              Construction rental support shaped by real site pressure.
-            </h1>
-            <p className="mt-6 max-w-3xl text-lg leading-9 text-slate-300">
-              {company.name} was built for contractors who need dependable
-              scaffolding and shuttering material, accurate coordination, and
-              practical answers before dispatch.
-            </p>
-          </MotionWrapper>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="About Us"
+        title="Construction rental support shaped by real site pressure."
+        description="SteelRise was built for contractors who need dependable scaffolding and shuttering material, accurate coordination, and practical answers before dispatch."
+      />
 
       <section className="py-20">
         <div className="container grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <SectionHeading
             eyebrow="Our Work"
-            title="We keep scaffold and formwork movement simple, disciplined, and site-focused."
-            description="From first enquiry to pickup after completion, our process is designed to reduce avoidable delays. We supply rental and sale material for building construction, factories, warehouses, infrastructure jobs, and maintenance teams."
+            title="We keep scaffold and formwork movement disciplined from quote to return."
+            description="Most delays happen in the gap between requirement, stock readiness, loading, and site coordination. Our operating rhythm closes that gap with checked material, clear quantities, and practical dispatch planning."
           />
           <div className="grid gap-4 sm:grid-cols-2">
             {stats.map((stat) => (
-              <Card key={stat.label} className="p-6">
-                <p className="text-4xl font-black text-slate-950">{stat.value}</p>
+              <Card key={stat.label} className="mesh-card p-6">
+                <AnimatedCounter
+                  value={stat.value}
+                  suffix={stat.suffix}
+                  className="text-4xl font-black text-slate-950"
+                />
                 <p className="mt-2 font-semibold text-slate-600">{stat.label}</p>
               </Card>
             ))}
@@ -57,7 +49,7 @@ export default function AboutPage() {
         <div className="container">
           <SectionHeading
             eyebrow="Why Contractors Choose Us"
-            title="Strong material, clean coordination, and practical site support."
+            title="Strong material is only half the job. Coordination is the other half."
             align="center"
           />
           <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -72,11 +64,11 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="py-20">
+      <section className="premium-section py-20">
         <div className="container">
           <SectionHeading
             eyebrow="How It Works"
-            title="A clear enquiry-to-dispatch process."
+            title="A quote process designed for working contractors."
             align="center"
           />
           <div className="mt-10 grid gap-6 lg:grid-cols-3">

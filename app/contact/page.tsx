@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Clock3, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 
 import { ContactForm } from "@/components/contact-form";
+import { PageHero } from "@/components/page-hero";
 import { SectionHeading } from "@/components/section-heading";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { company, locations } from "@/lib/data";
 
@@ -15,28 +17,21 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <>
-      <section className="industrial-surface py-24">
-        <div className="container">
-          <p className="mb-4 text-xs font-black uppercase tracking-[0.28em] text-amber-300">
-            Contact Us
-          </p>
-          <h1 className="max-w-4xl text-balance text-5xl font-black tracking-tight text-white sm:text-6xl">
-            Send your enquiry and get clear material guidance.
-          </h1>
-          <p className="mt-6 max-w-3xl text-lg leading-9 text-slate-300">
-            Share what you need, where the site is located, and when the material
-            is required. We will help you move quickly.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Contact Us"
+        title="Talk to a team that understands site urgency."
+        description="Share what you need, where the site is located, and when material is required. For urgent stock movement, call or WhatsApp directly."
+        ctaLabel="Request Quote Instead"
+        ctaHref="/request-quote"
+      />
 
       <section className="py-20">
         <div className="container grid gap-10 lg:grid-cols-[0.85fr_1.15fr]">
           <div className="space-y-5">
             <SectionHeading
               eyebrow="Talk to Sales"
-              title="Fast contact for rental and supply requirements."
-              description="For urgent dispatch, call or WhatsApp. For larger project requirements, send details through the form."
+              title="Choose the fastest contact path for your enquiry."
+              description="For urgent dispatch or replacement material, use call or WhatsApp. For planned requirements, the form gives our team the details needed for a cleaner response."
             />
             <Card>
               <CardContent className="space-y-5 p-6">
@@ -52,8 +47,24 @@ export default function ContactPage() {
                   <MapPin className="h-5 w-5 shrink-0 text-amber-500" />
                   {company.address}
                 </p>
+                <p className="flex gap-4 font-bold text-slate-800">
+                  <Clock3 className="h-5 w-5 shrink-0 text-amber-500" />
+                  {company.hours}
+                </p>
               </CardContent>
             </Card>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Button asChild size="lg">
+                <a href={`tel:${company.phone}`}>
+                  <Phone className="h-4 w-4" /> Call Sales
+                </a>
+              </Button>
+              <Button asChild size="lg" variant="secondary">
+                <a href={company.whatsapp} target="_blank" rel="noreferrer">
+                  <MessageCircle className="h-4 w-4" /> WhatsApp
+                </a>
+              </Button>
+            </div>
             <div className="rounded-3xl bg-slate-50 p-6">
               <h2 className="font-black text-slate-950">Common Service Cities</h2>
               <div className="mt-4 flex flex-wrap gap-2">
